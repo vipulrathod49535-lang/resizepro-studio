@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sandeep - Creative Web Developer</title>
+    <style>
+        :root { --bg-color-1: #0f0c29; --bg-color-2: #302b63; --bg-color-3: #24243e; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, var(--bg-color-1), var(--bg-color-2), var(--bg-color-3)); background-size: 400% 400%; animation: gradientBG 10s ease infinite; color: white; text-align: center; margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .container { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(15px); padding: 40px; border-radius: 25px; width: 85%; max-width: 500px; border: 1px solid rgba(255,255,255,0.2); position: relative; z-index: 10; }
+        .btn-dev { padding: 15px 30px; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; background: #ffcc00; color: #000; }
+        
+        #confetti-canvas, #wind-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        #confetti-canvas { z-index: 0; }
+        #wind-canvas { z-index: 1; }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+    <canvas id="wind-canvas"></canvas>
+
+    <div id="page1" class="container">
+        <h1>Sandeep</h1>
+        <p>Mastering Web Logic</p>
+        <button class="btn-dev" onclick="switchPage('page2')">✨ About Me</button>
+    </div>
+
+    <div id="page2" class="container" style="display:none;">
+        <h1>My Self</h1>
+        <p>I am Sandeep, a creative Web Developer.</p>
+        <button class="btn-dev" onclick="switchPage('page1')">🔄 Go to First Page</button>
+    </div>
+
+    <script>
+        const cCanvas = document.getElementById("confetti-canvas");
+        const wCanvas = document.getElementById("wind-canvas");
+        const cCtx = cCanvas.getContext("2d");
+        const wCtx = wCanvas.getContext("2d");
+
+        cCanvas.width = wCanvas.width = window.innerWidth;
+        cCanvas.height = wCanvas.height = window.innerHeight;
+
+        let particles = [], windLines = [];
+        for(let i=0; i<80; i++) particles.push({ x: Math.random()*cCanvas.width, y: Math.random()*cCanvas.height, size: Math.random()*6+2, speed: Math.random()*2+1, color: 'hsl(' + Math.random() * 360 + ', 100%, 60%)' });
+        for(let i=0; i<10; i++) windLines.push({ angle: Math.random()*Math.PI*2, radius: Math.random()*200+100, x: cCanvas.width/2, y: cCanvas.height/2, speed: 0.02 });
+
+        function animate() {
+            cCtx.clearRect(0,0, cCanvas.width, cCanvas.height);
+            wCtx.clearRect(0,0, wCanvas.width, wCanvas.height);
+            particles.forEach(p => { cCtx.fillStyle = p.color; cCtx.fillRect(p.x, p.y, p.size, p.size); p.y += p.speed; if(p.y > cCanvas.height) p.y = -10; });
+            wCtx.strokeStyle = "rgba(255,255,255,0.08)";
+            wCtx.lineWidth = 2;
+            windLines.forEach(w => { w.angle += w.speed; wCtx.beginPath(); wCtx.arc(cCanvas.width/2, cCanvas.height/2, w.radius, w.angle, w.angle + 0.5); wCtx.stroke(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        function switchPage(targetPage) {
+            document.getElementById('page1').style.display = (targetPage === 'page1') ? 'block' : 'none';
+            document.getElementById('page2').style.display = (targetPage === 'page2') ? 'block' : 'none';
+        }
+    </script> 
+</body>
+</html>
